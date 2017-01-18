@@ -39,14 +39,15 @@ namespace web
                 return next();
             });
 
-            app.Use(async (context, next) =>
+            app.UseOwin(buildFunc =>
+               buildFunc(next => async ctx =>
             {
                 var watch = new Stopwatch();
                 watch.Start();
-                await next().ConfigureAwait(false);
+                await next(ctx).ConfigureAwait(false);
                 watch.Stop();
                 Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
-            });
+            }));
 
             app.UsePlatform();
 
@@ -56,6 +57,5 @@ namespace web
             });
         }
     }
-
 }
 
