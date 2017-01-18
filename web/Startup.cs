@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -27,6 +28,15 @@ namespace web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.Use(async (context, next) =>
+            {
+                var watch = new Stopwatch();
+                watch.Start();
+                await next().ConfigureAwait(false);
+                watch.Stop();
+                Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
+            });
 
             app.Run(async (context) =>
             {
