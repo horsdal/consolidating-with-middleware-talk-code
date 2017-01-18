@@ -13,7 +13,8 @@
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.Extensions.Configuration.CommandLine": "1.1.0",
     "Microsoft.AspNetCore.Owin": "1.1.0",
-    "middlewarelib": "*"
+    "middlewarelib": "*",
+    "owinmiddlewarelib": "*"
   },
 
   "tools": {

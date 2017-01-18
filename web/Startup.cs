@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OwinMiddleware;
 
 namespace web
 {
@@ -40,14 +41,17 @@ namespace web
             });
 
             app.UseOwin(buildFunc =>
-               buildFunc(next => async ctx =>
             {
-                var watch = new Stopwatch();
-                watch.Start();
-                await next(ctx).ConfigureAwait(false);
-                watch.Stop();
-                Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
-            }));
+                buildFunc(next => new CorrelationIdMiddleware(next).Invoke);
+                buildFunc(next => async ctx =>
+                {
+                    var watch = new Stopwatch();
+                    watch.Start();
+                    await next(ctx).ConfigureAwait(false);
+                    watch.Stop();
+                    Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
+                });
+            });
 
             app.UsePlatform();
 
