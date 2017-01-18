@@ -47,10 +47,30 @@ namespace web
                 Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
             });
 
+            app.UseMiddleware<MonitoringEndpointsMiddleware>();
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
             });
         }
     }
+
+    public class MonitoringEndpointsMiddleware
+    {
+        private readonly RequestDelegate next;
+
+        public MonitoringEndpointsMiddleware(RequestDelegate next)
+        {
+            this.next = next;
+        }
+
+        public Task Invoke(HttpContext context)
+        {
+            if (context.Request.Path.Equals("/_monitor"))
+                return context.Response.WriteAsync("Version 1.0");
+            return this.next(context);
+        }
+    }
 }
+
