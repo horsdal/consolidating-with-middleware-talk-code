@@ -48,7 +48,7 @@ namespace web
                 Console.WriteLine($"Pipeline time: {watch.ElapsedMilliseconds}ms");
             });
 
-            app.UseMiddleware<MonitoringEndpointsMiddleware>();
+            app.UsePlatform();
 
             app.Run(async (context) =>
             {
