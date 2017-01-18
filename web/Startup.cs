@@ -29,6 +29,15 @@ namespace web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.Use((context, next) =>
+            {
+                var correlationId = context.Request.Headers["my-correlation-id"].FirstOrDefault()
+                                       ?? Guid.NewGuid().ToString();
+                // add to log context
+                Console.WriteLine($"Correlation id: {correlationId}");
+                return next();
+            });
+
             app.Use(async (context, next) =>
             {
                 var watch = new Stopwatch();
